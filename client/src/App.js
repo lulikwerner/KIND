@@ -3,7 +3,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import './App.css'
+import "./App.css";
 
 function App() {
   const [form, setForm] = useState({
@@ -25,10 +25,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   // const res = await fetch("http://localhost:5000/register", {
-   const res = await fetch("/api/register", {
-
-
+    const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
@@ -36,45 +33,54 @@ function App() {
 
     const data = await res.json();
 
- if (!data.success) {
-  toast.error(data.message, {
-    position: "top-center",
-    autoClose: 3000
-  });
-  return;
-}
+    if (!data.success) {
+      toast.error(data.message, {
+        position: "top-center",
+        autoClose: 3000
+      });
+      return;
+    }
 
-toast.success("The user has been registered", {
-  position: "top-center",
-  autoClose: 3000
-});
+    toast.success("The user has been registered", {
+      position: "top-center",
+      autoClose: 3000
+    });
 
+    // 🔥 Resetear formulario
+    setForm({
+      firstName: "",
+      lastName: "",
+      dob: "",
+      address: "",
+      email: "",
+      phone: ""
+    });
   };
 
   return (
     <div
       style={{
         maxWidth: 400,
-        margin: "450px auto 0",   
+        margin: "450px auto 0",
         paddingBottom: "120px",
-        backgroundColor: "white", 
+        backgroundColor: "white",
         padding: "30px",
-        borderRadius: "12px",    
-        boxShadow: "0 4px 12px rgba(0,0,0,0.15)" ,
+        borderRadius: "12px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
         fontFamily: "Arial, sans-serif"
-
       }}
     >
       <Header />
 
       <form
         onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "18px", width:"100%" }}
+        style={{ display: "flex", flexDirection: "column", gap: "18px", width: "100%" }}
       >
         <div>
           <label style={{ fontWeight: "bold" }}>First Name</label>
           <input
             name="firstName"
+            value={form.firstName}
             onChange={handleChange}
             required
             style={{
@@ -90,6 +96,7 @@ toast.success("The user has been registered", {
           <label style={{ fontWeight: "bold" }}>Last Name</label>
           <input
             name="lastName"
+            value={form.lastName}
             onChange={handleChange}
             required
             style={{
@@ -106,6 +113,7 @@ toast.success("The user has been registered", {
           <input
             name="dob"
             type="date"
+            value={form.dob}
             onChange={handleChange}
             required
             style={{
@@ -122,6 +130,7 @@ toast.success("The user has been registered", {
           <label style={{ fontWeight: "bold" }}>Address</label>
           <input
             name="address"
+            value={form.address}
             onChange={handleChange}
             required
             style={{
@@ -138,6 +147,7 @@ toast.success("The user has been registered", {
           <input
             name="email"
             type="email"
+            value={form.email}
             onChange={handleChange}
             required
             style={{
@@ -153,6 +163,7 @@ toast.success("The user has been registered", {
           <label style={{ fontWeight: "bold" }}>Phone Number</label>
           <input
             name="phone"
+            value={form.phone}
             onChange={handleChange}
             required
             style={{
@@ -163,20 +174,19 @@ toast.success("The user has been registered", {
             }}
           />
         </div>
-<button type="submit" className="register-btn">
-  Register
-</button>
 
+        <button type="submit" className="register-btn">
+          Register
+        </button>
       </form>
-<ToastContainer />
 
+      <ToastContainer />
       <Footer />
     </div>
   );
 }
 
 export default App;
-
 
 
 
