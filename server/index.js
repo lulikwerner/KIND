@@ -10,7 +10,7 @@ app.use(express.json());
 const registerRouter = require("./routes/register");
 
 
-app.use("/", registerRouter);
+app.use("/api", registerRouter);
 
 
 app.listen(process.env.SERVER_PORT, () => {
