@@ -13,16 +13,20 @@ function Header() {
         zIndex: 1000
       }}
     >
-      <img
-        src="/images/Patterson.png"
-        alt="Gobble Gobble"
-        style={{
-          width: "2000px",
-          height: "200px",
-          objectFit: "contain",
-          marginBottom: "10px"
-        }}
-      />
+<img
+  src="/images/Patterson.png"
+  alt="Gobble Gobble"
+  style={{
+    display: "block",
+    margin: "0 auto 10px auto",
+    width: "100%",
+    maxWidth: "600px",
+    height: "auto",
+    objectFit: "contain"
+  }}
+/>
+
+
 
       <h1
         style={{
