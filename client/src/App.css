@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+.register-btn {
+  display: block;
+  width: 105%;
+  padding: 12px;
+  background-color: #e77d2f;
+  color: black;
+  border: none;
+  font-size: 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.register-btn:hover {
+  background-color: #c9651f;
+  text-decoration: underline; 
+}

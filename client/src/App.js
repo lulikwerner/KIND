@@ -24,7 +24,10 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:5000/register", {
+   // const res = await fetch("http://localhost:5000/register", {
+   const res = await fetch("/api/register", {
+
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
@@ -159,24 +162,10 @@ toast.success("The user has been registered", {
             }}
           />
         </div>
+<button type="submit" className="register-btn">
+  Register
+</button>
 
-        <button
-          type="submit"
-          style={{
-            display: "block",
-            width:"105%",
-            padding: "12px",
-            backgroundColor: "#e77d2f",
-            color: "black",
-            border: "none",
-            fontSize:"18px",
-            borderRadius: "6px",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
-        >
-          Register
-        </button>
       </form>
 <ToastContainer />
 
