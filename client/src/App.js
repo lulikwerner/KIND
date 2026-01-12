@@ -118,7 +118,7 @@ function App() {
   required
   style={{
     width: "100%",
-    minHeight:"42px",
+    minHeight:"35px",
     padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
