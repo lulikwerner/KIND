@@ -111,19 +111,21 @@ function App() {
         <div>
           <label style={{ fontWeight: "bold" }}>Date of Birth</label>
           <input
-            name="dob"
-            type="date"
-            value={form.dob}
-            onChange={handleChange}
-            required
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "6px",
-              fontFamily: "Arial, sans-serif",
-              border: "1px solid #ccc"
-            }}
-          />
+  name="dob"
+  type="date"
+  value={form.dob}
+  onChange={handleChange}
+  required
+  style={{
+    width: "100%",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    backgroundColor: "white",      
+    WebkitAppearance: "none",      
+  }}
+/>
+
         </div>
 
         <div>
