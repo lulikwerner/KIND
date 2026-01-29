@@ -1,6 +1,8 @@
 const express = require("express");
+console.log("🔥 register.js LOADED");   
 const router = express.Router();
 const db = require("../db");
+
 
 router.post("/register", (req, res) => {
   console.log("📩 Incoming POST /api/register");
