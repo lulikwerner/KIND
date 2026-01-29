@@ -33,58 +33,74 @@ function App() {
   };
 
   const submitToDatabase = async () => {
-    const payload = {
-      ...form,
-      waiverAccepted: true,
-      waiverTimestamp: new Date().toISOString()
-    };
+  const payload = {
+    ...form,
+    waiverAccepted,
+    waiverTimestamp
+  };
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+  const res = await fetch("/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (!data.success) {
-      toast.error(data.message, {
-        position: "top-center",
-        autoClose: 3000
-      });
-      return;
-    }
-
-    toast.success("The user has been registered", {
+  if (!data.success) {
+    toast.error(data.message, {
       position: "top-center",
       autoClose: 3000
     });
+    return;
+  }
 
-    // Reset form
-    setForm({
-      firstName: "",
-      lastName: "",
-      dob: "",
-      address: "",
-      email: "",
-      phone: ""
+  toast.success("The user has been registered", {
+    position: "top-center",
+    autoClose: 3000
+  });
+
+  // Reset form
+  setForm({
+    firstName: "",
+    lastName: "",
+    dob: "",
+    address: "",
+    email: "",
+    phone: ""
+  });
+
+  setWaiverAccepted(false);
+};
+
+
+const handleWaiverAccept = () => {
+  // Si no marcó el checkbox, no puede continuar
+  if (!waiverAccepted) {
+    toast.error("You must agree to the waiver before completing your registration.", {
+      position: "top-center",
+      autoClose: 3000
     });
+    return;
+  }
 
-    setWaiverAccepted(false);
-  };
+  // Crear timestamp
+  const timestamp = new Date().toISOString();
+  setWaiverTimestamp(timestamp);
 
-  const handleWaiverAccept = () => {
-    if (!waiverAccepted) {
-      toast.error("You must agree to the waiver before completing your registration.", {
-        position: "top-center",
-        autoClose: 3000
-      });
-      return;
-    }
+  // Mostrar toast de aceptación
+  toast.success("Waiver accepted. Completing your registration...", {
+    position: "top-center",
+    autoClose: 2000
+  });
 
-    setShowWaiver(false);
-    submitToDatabase();
-  };
+  // Cerrar modal
+  setShowWaiver(false);
+
+  // Enviar al backend
+  submitToDatabase();
+};
+
 
   return (
     <div
@@ -206,9 +222,14 @@ function App() {
           />
         </div>
 
-        <button type="submit" className="register-btn">
-          Register
-        </button>
+      <button
+  type="button"
+  className="register-btn"
+  onClick={() => setShowWaiver(true)}
+>
+  Register
+</button>
+
       </form>
 
       {/* WAIVER MODAL */}
