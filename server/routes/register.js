@@ -3,59 +3,73 @@ const router = express.Router();
 const db = require("../db");
 
 router.post("/register", (req, res) => {
-  const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp } = req.body;
+  console.log("📩 Incoming POST /api/register");
+  console.log("Body received:", req.body);
 
-  // Generate registration timestamp
-  const registrationTimestamp = new Date();
+  try {
+    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp } = req.body;
 
-  if (!waiverAccepted || !waiverTimestamp) {
-    return res.status(400).json({
-      success: false,
-      message: "You must accept the waiver before registering."
-    });
-  }
+    // Generate registration timestamp
+    const registrationTimestamp = new Date();
 
-  const checkSql = "SELECT * FROM users WHERE email = ?";
-
-  db.query(checkSql, [email], (err, results) => {
-    if (err) return res.status(500).send(err);
-
-    if (results.length > 0) {
+    if (!waiverAccepted || !waiverTimestamp) {
       return res.status(400).json({
         success: false,
-        message: "User already registered"
+        message: "You must accept the waiver before registering."
       });
     }
 
-    const insertSql = `
-      INSERT INTO users 
-      (first_name, last_name, dob, address, email, phone, waiver_accepted, waiver_timestamp, registration_timestamp)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+    const checkSql = "SELECT * FROM users WHERE email = ?";
 
-    db.query(
-      insertSql,
-      [
-        firstName,
-        lastName,
-        dob,
-        address,
-        email,
-        phone,
-        waiverAccepted,
-        waiverTimestamp,
-        registrationTimestamp
-      ],
-      (err) => {
-        if (err) return res.status(500).send(err);
+    db.query(checkSql, [email], (err, results) => {
+      if (err) {
+        console.error("❌ MySQL SELECT error:", err);
+        return res.status(500).json({ success: false, message: "Database error" });
+      }
 
-        return res.json({
-          success: true,
-          message: "User registered successfully"
+      if (results.length > 0) {
+        return res.status(400).json({
+          success: false,
+          message: "User already registered"
         });
       }
-    );
-  });
+
+      const insertSql = `
+        INSERT INTO users 
+        (first_name, last_name, dob, address, email, phone, waiver_accepted, waiver_timestamp, registration_timestamp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      db.query(
+        insertSql,
+        [
+          firstName,
+          lastName,
+          dob,
+          address,
+          email,
+          phone,
+          waiverAccepted,
+          waiverTimestamp,
+          registrationTimestamp
+        ],
+        (err) => {
+          if (err) {
+            console.error("❌ MySQL INSERT error:", err);
+            return res.status(500).json({ success: false, message: "Database insert error" });
+          }
+
+          return res.json({
+            success: true,
+            message: "User registered successfully"
+          });
+        }
+      );
+    });
+  } catch (error) {
+    console.error("❌ ERROR in /api/register:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
 });
 
 module.exports = router;
