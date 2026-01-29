@@ -17,6 +17,7 @@ function App() {
 
   const [showWaiver, setShowWaiver] = useState(false);
   const [waiverAccepted, setWaiverAccepted] = useState(false);
+const [waiverTimestamp, setWaiverTimestamp] = useState(null);
 
   const handleChange = (e) => {
     setForm({
