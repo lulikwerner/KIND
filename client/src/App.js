@@ -86,10 +86,6 @@ function App() {
 
     setWaiverTimestamp(timestamp);
 
-    toast.success("Waiver accepted. Completing your registration...", {
-      position: "top-center",
-      autoClose: 2000
-    });
 
     setShowWaiver(false);
 
