@@ -82,7 +82,8 @@ function App() {
       return;
     }
 
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
+
     setWaiverTimestamp(timestamp);
 
     toast.success("Waiver accepted. Completing your registration...", {
