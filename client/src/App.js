@@ -76,7 +76,6 @@ const [waiverTimestamp, setWaiverTimestamp] = useState(null);
 
 
 const handleWaiverAccept = () => {
-  // Si no marcó el checkbox, no puede continuar
   if (!waiverAccepted) {
     toast.error("You must agree to the waiver before completing your registration.", {
       position: "top-center",
@@ -85,22 +84,19 @@ const handleWaiverAccept = () => {
     return;
   }
 
-  // Crear timestamp
   const timestamp = new Date().toISOString();
-  setWaiverTimestamp(timestamp);
 
-  // Mostrar toast de aceptación
   toast.success("Waiver accepted. Completing your registration...", {
     position: "top-center",
     autoClose: 2000
   });
 
-  // Cerrar modal
   setShowWaiver(false);
 
-  // Enviar al backend
-  submitToDatabase();
+  // Enviar valores directamente
+  submitToDatabase(true, timestamp);
 };
+
 
 
   return (
