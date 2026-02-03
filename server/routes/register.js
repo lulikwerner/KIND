@@ -68,7 +68,7 @@ router.post("/register", (req, res) => {
           const mailOptions = {
              from: process.env.EMAILUSER,
             to: email,
-            subject: "Thank you for registering!",
+            subject: "Thank you for registering for the K.I.N.D. Ride event!",
             text: `Hello ${firstName},
 
 Thank you for signing up!
