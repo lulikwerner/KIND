@@ -11,11 +11,5 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// 🔥 Agrega esto:
-console.log("ENV CHECK:", process.env.EMAILUSER, process.env.HOST, process.env.PORT);
-
-transporter.verify((err, success) => {
-  console.log("SMTP TEST:", err || success);
-});
 
 module.exports = transporter;

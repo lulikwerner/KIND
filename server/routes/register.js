@@ -91,13 +91,16 @@ We look forward to seeing you there!`,
     The ride will begin promptly at <strong>8:30 AM</strong>.
   </p>
 
-<p>
+  <p>
+    <strong>📅 Event Date:</strong> February 21, 2026<br>
+
   <strong>📍 Location:</strong> Tamarac Sports Complex<br><br>
-  <a href="https://maps.app.goo.gl/zmoRrLM6T5pxSFuC9" target="_blank">
+  <a href="https://www.google.com/maps?q=9901+NW+77th+St,+Tamarac,+FL+33321" target="_blank">
     9901 NW 77th St, Tamarac, FL 33321
   </a>
-</p>
 
+
+  </p>
 
   <p>We look forward to seeing you there!</p>
 
