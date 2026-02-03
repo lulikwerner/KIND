@@ -2,6 +2,10 @@ const express = require("express");
 console.log("🔥 register.js LOADED");   
 const router = express.Router();
 const db = require("../db");
+const transporter = require("../email");
+require('dotenv').config();
+
+
 
 
 router.post("/register", (req, res) => {
@@ -60,6 +64,53 @@ router.post("/register", (req, res) => {
             console.error("❌ MySQL INSERT error:", err);
             return res.status(500).json({ success: false, message: "Database insert error" });
           }
+          // 📧 SEND EMAIL TO USER 
+          const mailOptions = {
+             from: process.env.EMAILUSER,
+            to: email,
+            subject: "Thank you for registering!",
+            text: `Hello ${firstName},
+
+Thank you for signing up!
+
+Please arrive by 8:00 AM. The ride will begin promptly at 8:30 AM.
+
+Event Date: February 21, 2026
+Location: Tamarac Sports Complex
+Address: 9901 NW 77th St, Tamarac, FL 33321
+
+We look forward to seeing you there!`,
+
+           html: `
+  <p>Hello <strong>${firstName}</strong>,</p>
+
+  <p>Thank you for signing up!</p>
+
+  <p>
+    Please arrive by <strong>8:00 AM</strong>.<br>
+    The ride will begin promptly at <strong>8:30 AM</strong>.
+  </p>
+
+  <p>
+    <strong>Event Date:</strong> February 21, 2026<br>
+    <strong>Location:</strong> Tamarac Sports Complex<br>
+    <strong>Address:</strong> 9901 NW 77th St, Tamarac, FL 33321
+  </p>
+
+  <p>We look forward to seeing you there!</p>
+
+  <p>Best regards,<br>Your Team</p>
+`,
+
+         };
+             transporter.sendMail(mailOptions, (error, info) => {
+                if (error) { 
+                    console.error("❌ Email send error:", error);
+                }
+                else {
+                    console.log("📧 Email sent:", info.response);
+                } 
+            });
 
           return res.json({
             success: true,
