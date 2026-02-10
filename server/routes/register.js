@@ -24,21 +24,27 @@ router.post("/register", (req, res) => {
         message: "You must accept the waiver before registering."
       });
     }
+const checkSql = `
+  SELECT * 
+  FROM users 
+  WHERE email = ? 
+    AND waiver_timestamp >= NOW() - INTERVAL 25 DAY
+`;
 
-    const checkSql = "SELECT * FROM users WHERE email = ?";
+db.query(checkSql, [email], (err, results) => {
+  if (err) {
+    console.error("❌ MySQL SELECT error:", err);
+    return res.status(500).json({ success: false, message: "Database error" });
+  }
 
-    db.query(checkSql, [email], (err, results) => {
-      if (err) {
-        console.error("❌ MySQL SELECT error:", err);
-        return res.status(500).json({ success: false, message: "Database error" });
-      }
+  if (results.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: "User already registered"
+    });
+  }
 
-      if (results.length > 0) {
-        return res.status(400).json({
-          success: false,
-          message: "User already registered"
-        });
-      }
+
 
       const insertSql = `
         INSERT INTO users 
