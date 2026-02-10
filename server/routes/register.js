@@ -24,13 +24,13 @@ router.post("/register", (req, res) => {
         message: "You must accept the waiver before registering."
       });
     }
-const checkSql = ` 
-SELECT * 
-FROM users 
-WHERE email = ? 
-AND waiver_timestamp IS NOT NULL
-AND waiver_timestamp != '0000-00-00 00:00:00' 
-AND waiver_timestamp >= NOW() - INTERVAL 25 DAY 
+const checkSql = `
+  SELECT *
+  FROM users
+  WHERE email = ?
+    AND waiver_timestamp IS NOT NULL
+    AND waiver_timestamp != '0000-00-00 00:00:00'
+    AND waiver_timestamp >= NOW() - INTERVAL 25 DAY
 `;
 
 db.query(checkSql, [email], (err, results) => {
@@ -39,6 +39,7 @@ db.query(checkSql, [email], (err, results) => {
     return res.status(500).json({ success: false, message: "Database error" });
   }
 
+  // Si results > 0 → bloquear
   if (results.length > 0) {
     return res.status(400).json({
       success: false,
