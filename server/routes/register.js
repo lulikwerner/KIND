@@ -24,11 +24,13 @@ router.post("/register", (req, res) => {
         message: "You must accept the waiver before registering."
       });
     }
-const checkSql = `
-  SELECT * 
-  FROM users 
-  WHERE email = ? 
-    AND waiver_timestamp >= NOW() - INTERVAL 25 DAY
+const checkSql = ` 
+SELECT * 
+FROM users 
+WHERE email = ? 
+AND waiver_timestamp IS NOT NULL
+AND waiver_timestamp != '0000-00-00 00:00:00' 
+AND waiver_timestamp >= NOW() - INTERVAL 25 DAY 
 `;
 
 db.query(checkSql, [email], (err, results) => {
