@@ -134,7 +134,7 @@ We look forward to seeing you there!`,
       );
     });
   } catch (error) {
-    console.error("❌ ERROR in /api/register:", error);
+    console.error("❌ ERROR in /register:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
