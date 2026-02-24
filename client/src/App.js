@@ -31,7 +31,7 @@ function App() {
     setShowWaiver(true);
   };
 
-  // AHORA acepta parámetros
+
   const submitToDatabase = async (accepted, timestamp) => {
     const payload = {
       ...form,
@@ -89,7 +89,7 @@ function App() {
 
     setShowWaiver(false);
 
-    // PASAMOS LOS VALORES DIRECTAMENTE
+
     submitToDatabase(true, timestamp);
   };
 
