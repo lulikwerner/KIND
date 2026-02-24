@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db");   // ← usa la misma conexión que register.js
+const db = require("../db");   
 require("dotenv").config();
 
 router.get("/registrations", (req, res) => {
