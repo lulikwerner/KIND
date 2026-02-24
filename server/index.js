@@ -7,10 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const registerRouter = require("./routes/register");
-
-
-app.use("/api", registerRouter);
+app.use("/api", require("./routes"));
 
 
 app.listen(process.env.SERVER_PORT, () => {
