@@ -1,30 +1,23 @@
 const express = require("express");
 const router = express.Router();
-const mariadb = require("mariadb");
+const db = require("../db");   // ← usa la misma conexión que register.js
+require("dotenv").config();
 
-const pool = mariadb.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
+router.get("/registrations", (req, res) => {
+  const sql = `
+    SELECT *
+    FROM users
+    WHERE registration_timestamp > ?
+  `;
 
-router.get("/registrations", async (req, res) => {
-  try {
-    const conn = await pool.getConnection();
+  db.query(sql, ["2026-02-21"], (err, results) => {
+    if (err) {
+      console.error("❌ MySQL SELECT error:", err);
+      return res.status(500).send("Server error");
+    }
 
-    const rows = await conn.query(
-      "SELECT * FROM users WHERE registration_timestamp > ?",
-      ["2026-02-21"]
-    );
-
-    conn.release();
-
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
+    res.json(results);
+  });
 });
 
 module.exports = router;
