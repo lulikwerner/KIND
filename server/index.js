@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 
-app.use("/api", require("./routes"));
+app.use("/", require("./routes"));
 
 
 app.listen(process.env.SERVER_PORT, () => {

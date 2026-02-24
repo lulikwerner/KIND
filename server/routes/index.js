@@ -6,9 +6,10 @@ const registerRouter = require("./register");
 const downloadRouter = require("./download");
 const loginRouter = require("./login");
 
-router.use("/register", registerRouter);
-router.use("/download", downloadRouter);
-router.use("/login", loginRouter);
+router.use("/", registerRouter);
+router.use("/", downloadRouter);
+router.use("/", loginRouter);
+
 
 
 module.exports = router;
