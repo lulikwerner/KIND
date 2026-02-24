@@ -9,7 +9,7 @@ require('dotenv').config();
 
 
 router.post("/register", (req, res) => {
-  console.log("📩 Incoming POST /api/register");
+  console.log("📩 Incoming POST /register");
   console.log("Body received:", req.body);
 
   try {
