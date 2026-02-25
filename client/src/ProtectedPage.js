@@ -6,6 +6,7 @@ export default function ProtectedPage() {
   const [pass, setPass] = useState("");
   const [ok, setOk] = useState(false);
   const [error, setError] = useState("");
+  const [fromDate, setFromDate] = useState(""); // <-- NUEVO
 
   const handleLogin = async () => {
     try {
@@ -27,7 +28,8 @@ export default function ProtectedPage() {
   };
 
   const handleDownload = () => {
-    window.location.href = "/api/download";
+    if (!fromDate) return; // seguridad
+    window.location.href = `/api/download?from=${fromDate}`;
   };
 
   const containerStyle = {
@@ -73,9 +75,9 @@ export default function ProtectedPage() {
         >
           Enter
         </button>
-     
+
         {error && <p style={{ color: "red" }}>{error}</p>}
-         <Footer />
+        <Footer />
       </div>
     );
   }
@@ -84,15 +86,31 @@ export default function ProtectedPage() {
     <div style={containerStyle}>
       <h2>Protected page</h2>
 
+      <label style={{ fontWeight: "bold" }}>Select start date:</label>
+      <input
+        type="date"
+        value={fromDate}
+        onChange={(e) => setFromDate(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "10px",
+          borderRadius: "6px",
+          border: "1px solid #ccc",
+          marginBottom: "15px",
+          marginTop: "5px"
+        }}
+      />
+
       <button
         onClick={handleDownload}
+        disabled={!fromDate}
         style={{
           padding: "10px 15px",
-          background: "#007ACC",
+          background: fromDate ? "#007ACC" : "#999",
           color: "white",
           border: "none",
           borderRadius: "6px",
-          cursor: "pointer"
+          cursor: fromDate ? "pointer" : "not-allowed"
         }}
       >
         Download registration
