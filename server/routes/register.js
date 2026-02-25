@@ -9,8 +9,8 @@ require('dotenv').config();
 
 
 router.post("/register", (req, res) => {
-  console.log("📩 Incoming POST /register");
-  console.log("Body received:", req.body);
+  //console.log("📩 Incoming POST /register");
+ // console.log("Body received:", req.body);
 
   try {
     const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp } = req.body;
