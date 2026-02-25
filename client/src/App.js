@@ -1,28 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AppMain from "./AppMain";
 import ProtectedPage from "./ProtectedPage";
-import LoginPage from "./LoginPage"; // ← tu formulario de login
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
+      <Header />
+
       <Routes>
-        {/* Main Page */}
         <Route path="/" element={<AppMain />} />
 
-        {/* Login Page*/}
-        <Route path="/login" element={<LoginPage />} />
+        {/* Login + protected content */}
+        <Route path="/login" element={<ProtectedPage />} />
 
-        {/* Protected Page*/}
-        <Route path="/dashboard" element={<ProtectedPage />} />
-
-             {/* Download Page */}
-        <Route path="/download" element={<ProtectedPage><DownloadPage /></ProtectedPage>} />
+        {/* Download page uses the SAME component */}
+        <Route path="/download" element={<ProtectedPage />} />
       </Routes>
+
+      <Footer />
     </Router>
   );
 }
 
 export default App;
+
 
 
