@@ -1,4 +1,4 @@
-// ProtectedPage.jsx
+
 import { useState } from "react";
 
 export default function ProtectedPage() {
@@ -8,7 +8,7 @@ export default function ProtectedPage() {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: pass })
