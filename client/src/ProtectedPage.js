@@ -32,7 +32,7 @@ export default function ProtectedPage() {
 
   const containerStyle = {
     maxWidth: 400,
-    margin: "150px auto 0",
+    margin: "450px auto 0",
     paddingBottom: "120px",
     backgroundColor: "white",
     padding: "30px",
