@@ -47,7 +47,7 @@ db.query(checkSql, [email, cutoffDate], (err, results) => {
   if (results.length > 0) {
     return res.status(400).json({
       success: false,
-      message: "User already registered for this event"
+      message: "Thank you for your interest. It looks like you’re already signed up for this event."
     });
   }
 
