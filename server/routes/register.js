@@ -88,7 +88,7 @@ Thank you for signing up!
 
 Please arrive by 8:00 AM. The ride will begin promptly at 8:30 AM.
 
-Event Date: February 21, 2026
+Event Date: March 21, 2026
 Location: Tamarac Sports Complex
 Address: 9901 NW 77th St, Tamarac, FL 33321
 
