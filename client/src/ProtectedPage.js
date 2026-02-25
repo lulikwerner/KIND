@@ -28,8 +28,8 @@ export default function ProtectedPage() {
   };
 
   const handleDownload = () => {
-    if (!fromDate) return; // seguridad
-    window.location.href = `/api/download?from=${fromDate}`;
+    if (!fromDate) return; 
+    window.location.href = `/download?from=${fromDate}`;
   };
 
   const containerStyle = {
