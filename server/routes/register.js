@@ -47,7 +47,7 @@ db.query(checkSql, [email, cutoffDate], (err, results) => {
   if (results.length > 0) {
     return res.status(400).json({
       success: false,
-      message: "User already registered after February 21"
+      message: "User already registered for this event"
     });
   }
 
