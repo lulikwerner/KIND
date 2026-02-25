@@ -17,6 +17,9 @@ router.post("/register", (req, res) => {
 
     // Generate registration timestamp
     const registrationTimestamp = new Date();
+    const year = new Date().getFullYear();
+    //Date that needs to be change for every K.I.N.D event
+     const cutoffDate = `${year}-02-21 00:00:00`
 
     if (!waiverAccepted || !waiverTimestamp) {
       return res.status(400).json({
@@ -30,10 +33,11 @@ const checkSql = `
   WHERE email = ?
     AND waiver_timestamp IS NOT NULL
     AND waiver_timestamp != '0000-00-00 00:00:00'
-    AND waiver_timestamp >= NOW() - INTERVAL 25 DAY
+    AND waiver_timestamp >= ?
 `;
 
-db.query(checkSql, [email], (err, results) => {
+
+db.query(checkSql, [email, cutoffDate], (err, results) => {
   if (err) {
     console.error("❌ MySQL SELECT error:", err);
     return res.status(500).json({ success: false, message: "Database error" });
@@ -43,7 +47,7 @@ db.query(checkSql, [email], (err, results) => {
   if (results.length > 0) {
     return res.status(400).json({
       success: false,
-      message: "User already registered"
+      message: "User already registered after February 21"
     });
   }
 
