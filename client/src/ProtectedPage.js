@@ -29,7 +29,7 @@ export default function ProtectedPage() {
 
   const handleDownload = () => {
     if (!fromDate) return; 
-    window.location.href = `/download?from=${fromDate}`;
+    window.location.href = `/api/download?from=${fromDate}`;
   };
 
   const containerStyle = {
