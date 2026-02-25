@@ -30,20 +30,20 @@ export default function ProtectedPage() {
     window.location.href = "/api/download";
   };
 
+  const containerStyle = {
+    maxWidth: 400,
+    margin: "150px auto 0",
+    paddingBottom: "120px",
+    backgroundColor: "white",
+    padding: "30px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+    fontFamily: "Arial, sans-serif"
+  };
+
   if (!ok) {
     return (
-      <div
-        style={{
-          maxWidth: 400,
-          margin: "150px auto 0",
-          paddingBottom: "120px",
-          backgroundColor: "white",
-          padding: "30px",
-          borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-          fontFamily: "Arial, sans-serif"
-        }}
-      >
+      <div style={containerStyle}>
         <Header />
 
         <h2>Enter password</h2>
@@ -73,25 +73,15 @@ export default function ProtectedPage() {
         >
           Enter
         </button>
-
+     
         {error && <p style={{ color: "red" }}>{error}</p>}
+         <Footer />
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        maxWidth: 400,
-        margin: "150px auto 0",
-        paddingBottom: "120px",
-        backgroundColor: "white",
-        padding: "30px",
-        borderRadius: "12px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-        fontFamily: "Arial, sans-serif"
-      }}
-    >
+    <div style={containerStyle}>
       <h2>Protected page</h2>
 
       <button
