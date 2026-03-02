@@ -105,7 +105,7 @@ We look forward to seeing you there!`,
   </p>
 
   <p>
-    <strong>📅 Event Date:</strong> February 21, 2026<br>
+    <strong>📅 Event Date:</strong> March 21, 2026<br>
 
   <strong>📍 Location:</strong> Tamarac Sports Complex<br><br>
   <a href="https://www.google.com/maps?q=9901+NW+77th+St,+Tamarac,+FL+33321" target="_blank">
