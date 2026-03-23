@@ -19,7 +19,7 @@ router.post("/register", (req, res) => {
     const registrationTimestamp = new Date();
     const year = new Date().getFullYear();
     //Date that needs to be change for every K.I.N.D event
-     const cutoffDate = `${year}-02-21 00:00:00`
+     const cutoffDate = `${year}03-21 12:00:00`
 
     if (!waiverAccepted || !waiverTimestamp) {
       return res.status(400).json({
@@ -88,7 +88,7 @@ Thank you for signing up!
 
 Please arrive by 8:00 AM. The ride will begin promptly at 8:30 AM.
 
-Event Date: March 21, 2026
+Event Date: April 18, 2026
 Location: Tamarac Sports Complex
 Address: 9901 NW 77th St, Tamarac, FL 33321
 
@@ -105,7 +105,7 @@ We look forward to seeing you there!`,
   </p>
 
   <p>
-    <strong>📅 Event Date:</strong> March 21, 2026<br>
+    <strong>📅 Event Date:</strong> April 18, 2026<br>
 
   <strong>📍 Location:</strong> Tamarac Sports Complex<br><br>
   <a href="https://www.google.com/maps?q=9901+NW+77th+St,+Tamarac,+FL+33321" target="_blank">
