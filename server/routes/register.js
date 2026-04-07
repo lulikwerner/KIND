@@ -56,7 +56,7 @@ db.query(checkSql, [email, cutoffDate], (err, results) => {
       const insertSql = `
         INSERT INTO users 
         (first_name, last_name, dob, address, email, phone, waiver_accepted, waiver_timestamp, registration_timestamp, riding_for)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
       `;
 
       db.query(
