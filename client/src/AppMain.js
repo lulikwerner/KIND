@@ -112,6 +112,11 @@ function App() {
         onSubmit={handleSubmit}
         style={{ display: "flex", flexDirection: "column", gap: "18px", width: "100%" }}
       >
+           {/* Message at the top */}
+    <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "20px" }}>
+      Join us for this week’s community ride, dedicated to National Crime Victims’ Rights Week. 
+      Together, we honor survivors and uplift the importance of victims’ rights.
+    </p>
         <div>
           <label style={{ fontWeight: "bold" }}>First Name</label>
           <input
@@ -212,7 +217,24 @@ function App() {
             }}
           />
         </div>
-
+    {/* New input field */}
+    <div style={{ marginBottom: "25px" }}>
+      <label style={{ fontWeight: "bold" }}>
+        Please share the name of the person you are riding in honor of
+      </label>
+      <input
+        name="riding_for"
+        value={form.riding_for}
+        onChange={handleChange}
+        style={{
+          width: "100%",
+          padding: "10px",
+          borderRadius: "6px",
+          border: "1px solid #ccc",
+          marginTop: "8px"
+        }}
+      />
+    </div>
         <button type="submit" className="register-btn">
           Register
         </button>
