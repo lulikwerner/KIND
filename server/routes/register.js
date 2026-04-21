@@ -19,7 +19,8 @@ router.post("/register", (req, res) => {
     const registrationTimestamp = new Date();
     const year = new Date().getFullYear();
     //Date that needs to be change for every K.I.N.D event
-     const cutoffDate = `${year}04-18 12:00:00`
+    const cutoffDate = `${year}-04-18 12:00:00`;
+
 8
     if (!waiverAccepted || !waiverTimestamp) {
       return res.status(400).json({
