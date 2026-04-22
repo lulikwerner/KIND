@@ -217,8 +217,8 @@ function App() {
             }}
           />
         </div>
-    {/* New input field */}
-    <div style={{ marginBottom: "25px" }}>
+  {/* New input field */}
+    {/*<div style={{ marginBottom: "25px" }}>
       <label style={{ fontWeight: "bold" }}>
         Please share the name of the person you are riding in honor of
       </label>
@@ -234,7 +234,7 @@ function App() {
           marginTop: "8px"
         }}
       />
-    </div>
+    </div>*/}
         <button type="submit" className="register-btn">
           Register
         </button>
