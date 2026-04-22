@@ -39,7 +39,7 @@ function App() {
       waiverTimestamp: timestamp
     };
 
-    const res = await fetch("/api/register", {
+    const res = await fetch("/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
