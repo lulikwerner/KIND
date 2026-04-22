@@ -39,7 +39,7 @@ function App() {
       waiverTimestamp: timestamp
     };
 
-    const res = await fetch("/api/register", {
+    const res = await fetch("/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -113,10 +113,10 @@ function App() {
         style={{ display: "flex", flexDirection: "column", gap: "18px", width: "100%" }}
       >
            {/* Message at the top */}
-    <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "20px" }}>
+    {/*<p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "20px" }}>
       Join us for this week’s community ride, dedicated to National Crime Victims’ Rights Week. 
       Together, we honor survivors and uplift the importance of victims’ rights.
-    </p>
+    </p>*/}
         <div>
           <label style={{ fontWeight: "bold" }}>First Name</label>
           <input
