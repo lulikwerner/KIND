@@ -13,7 +13,7 @@ router.post("/register", (req, res) => {
  // console.log("Body received:", req.body);
 
   try {
-    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, riding_for } = req.body;
+    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, /*riding_for*/ } = req.body;
 
     // Generate registration timestamp
     const registrationTimestamp = new Date();
@@ -53,12 +53,27 @@ db.query(checkSql, [email, cutoffDate], (err, results) => {
   }
 
 
+const insertSql = `
+  INSERT INTO users 
+  (
+    first_name, 
+    last_name, 
+    dob, 
+    address, 
+    email, 
+    phone, 
+    waiver_accepted, 
+    waiver_timestamp, 
+    registration_timestamp
+    /* , riding_for */
+  )
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  /* Original:
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  */
+`;
 
-      const insertSql = `
-        INSERT INTO users 
-        (first_name, last_name, dob, address, email, phone, waiver_accepted, waiver_timestamp, registration_timestamp, riding_for)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
-      `;
+
 
       db.query(
         insertSql,
@@ -72,7 +87,7 @@ db.query(checkSql, [email, cutoffDate], (err, results) => {
           waiverAccepted,
           waiverTimestamp,
           registrationTimestamp,
-          riding_for
+        /*  riding_for*/
         ],
         (err) => {
           if (err) {
