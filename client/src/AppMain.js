@@ -113,10 +113,11 @@ function App() {
         style={{ display: "flex", flexDirection: "column", gap: "18px", width: "100%" }}
       >
            {/* Message at the top */}
-    {/*<p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "20px" }}>
-      Join us for this week’s community ride, dedicated to National Crime Victims’ Rights Week. 
-      Together, we honor survivors and uplift the importance of victims’ rights.
-    </p>*/}
+    {<p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "20px" }}>
+      Join us for the K.I.N.D. Ride for Miles as we cycle through Tamarac’s neighborhoods, promoting positivity, supporting local businesses, and fostering a spirit of kindness, connection, and respect within our community.
+
+In recognition of Armed Forces Day, observed on the third Saturday of May, this month’s ride honors the dedicated men and women currently serving in the United States Armed Forces—Army, Navy, Marine Corps, Air Force, Coast Guard, and Space Force. We proudly acknowledge their service, sacrifice, and commitment to our nation.
+    </p>}
         <div>
           <label style={{ fontWeight: "bold" }}>First Name</label>
           <input
@@ -218,7 +219,7 @@ function App() {
           />
         </div>
   {/* New input field */}
-    {/*<div style={{ marginBottom: "25px" }}>
+    {<div style={{ marginBottom: "25px" }}>
       <label style={{ fontWeight: "bold" }}>
         Please share the name of the person you are riding in honor of
       </label>
@@ -234,7 +235,7 @@ function App() {
           marginTop: "8px"
         }}
       />
-    </div>*/}
+    </div>}
         <button type="submit" className="register-btn">
           Register
         </button>
