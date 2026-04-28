@@ -13,7 +13,7 @@ router.post("/register", (req, res) => {
   console.log("Body received:", req.body);
 
   try {
-    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, /*riding_for*/ } = req.body;
+    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, riding_for } = req.body;
 
     // Generate registration timestamp
     const registrationTimestamp = new Date();
@@ -64,13 +64,14 @@ const insertSql = `
     phone, 
     waiver_accepted, 
     waiver_timestamp, 
-    registration_timestamp
-    /* , riding_for */
+    registration_timestamp,
+  riding_for 
   )
+    /* Original:
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  /* Original:
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   */
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+
 `;
 
 
@@ -87,7 +88,7 @@ const insertSql = `
           waiverAccepted,
           waiverTimestamp,
           registrationTimestamp,
-        /*  riding_for*/
+        riding_for
         ],
         (err) => {
           if (err) {
@@ -96,7 +97,7 @@ const insertSql = `
           }
           // 📧 SEND EMAIL TO USER 
           const mailOptions = {
-             from: process.env.EMAILUSER,
+             from: process.env.EMAIL_FROM,
             to: email,
             subject: "Thank you for registering for the K.I.N.D. Ride event!",
             text: `Hello ${firstName},
@@ -105,7 +106,7 @@ Thank you for signing up!
 
 Please arrive by 8:00 AM. The ride will begin promptly at 8:30 AM.
 
-Event Date: May 1, 2026
+Event Date: May 16, 2026
 Location: Tamarac Sports Complex
 Address: 9901 NW 77th St, Tamarac, FL 33321
 
