@@ -65,14 +65,11 @@ const insertSql = `
     waiver_accepted, 
     waiver_timestamp, 
     registration_timestamp,
-  riding_for 
+    riding_for
   )
-    /* Original:
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  */
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-
 `;
+
 
 
 
