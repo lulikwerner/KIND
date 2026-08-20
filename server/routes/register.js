@@ -10,10 +10,10 @@ require('dotenv').config();
 
 router.post("/register", (req, res) => {
   //console.log("📩 Incoming POST /register");
-  console.log("Body received:", req.body);
+  //console.log("Body received:", req.body);
 
   try {
-    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, riding_for } = req.body;
+    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, /*riding_for*/ } = req.body;
 
     // Generate registration timestamp
     const registrationTimestamp = new Date();
@@ -65,12 +65,13 @@ const insertSql = `
     waiver_accepted, 
     waiver_timestamp, 
     registration_timestamp,
-    riding_for
+
   )
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, )
 `;
 
-
+//need to ADD under INSERT INTO users     riding_for and ?
 
 
       db.query(
@@ -85,7 +86,7 @@ const insertSql = `
           waiverAccepted,
           waiverTimestamp,
           registrationTimestamp,
-        riding_for
+       // riding_for
         ],
         (err) => {
           if (err) {
