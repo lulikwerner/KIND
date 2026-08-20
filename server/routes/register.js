@@ -64,11 +64,10 @@ const insertSql = `
     phone, 
     waiver_accepted, 
     waiver_timestamp, 
-    registration_timestamp,
-
+    registration_timestamp
   )
     
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, )
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ? )
 `;
 
 //need to ADD under INSERT INTO users     riding_for and ?
