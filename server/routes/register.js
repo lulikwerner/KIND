@@ -13,7 +13,7 @@ router.post("/register", (req, res) => {
   //console.log("Body received:", req.body);
 
   try {
-    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, /*riding_for*/ } = req.body;
+    const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, riding_for } = req.body;
 
     // Generate registration timestamp
     const registrationTimestamp = new Date();
