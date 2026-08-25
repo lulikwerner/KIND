@@ -10,7 +10,7 @@ require('dotenv').config();
 
 router.post("/register", (req, res) => {
   //console.log("📩 Incoming POST /register");
-  console.log("Body received:", req.body);
+  //console.log("Body received:", req.body);
 
   try {
     const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, riding_for } = req.body;
@@ -33,7 +33,6 @@ const checkSql = `
   FROM users
   WHERE email = ?
     AND waiver_timestamp IS NOT NULL
-    AND waiver_timestamp != '0000-00-00 00:00:00'
     AND waiver_timestamp >= ?
 `;
 
