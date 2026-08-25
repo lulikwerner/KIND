@@ -53,6 +53,7 @@
 }
 
 .register-btn:hover {
-  background-color: #c9651f;
+  /*background-color: #c9651f;*/
+  background-color: #DE7D9D;
   text-decoration: underline; 
 }
