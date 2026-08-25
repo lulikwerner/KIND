@@ -4,7 +4,8 @@ function Footer() {
       style={{
         backgroundColor:"#EB92A9",
         //backgroundColor: "#3a6fb6",
-        color: "white",
+       // color: "white",
+       color:"black",
         textAlign: "center",
         padding: "15px 0",
         position: "fixed",

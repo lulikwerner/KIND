@@ -4,7 +4,8 @@ function Header() {
       style={{
           backgroundColor:"#EB92A9",
         //backgroundColor: "#3a6fb6",
-        color: "white",
+        //color: "white",
+        color:"black",
         textAlign: "center",
         padding: "20px 0",
         position: "fixed",
@@ -32,7 +33,8 @@ function Header() {
           margin: 0,
           fontSize: "40px",
           fontWeight: "bold",
-          lineHeight: "1.2"
+          lineHeight: "1.2",
+          color:"#000000"
         }}
       >
         K.I.N.D<br /> RIDE FOR MILES

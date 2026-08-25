@@ -41,8 +41,9 @@
   display: block;
   width: 105%;
   padding: 12px;
-  background-color: #e77d2f;
-  color: black;
+ /*background-color: #e77d2f;*/
+ background-color:#D14F7B;
+  color: "black";
   border: none;
   font-size: 18px;
   border-radius: 6px;
