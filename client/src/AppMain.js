@@ -12,7 +12,8 @@ function App() {
     dob: "",
     address: "",
     email: "",
-    phone: ""
+    phone: "",
+    riding_for: ""
   });
 
   const [showWaiver, setShowWaiver] = useState(false);
@@ -66,7 +67,8 @@ function App() {
       dob: "",
       address: "",
       email: "",
-      phone: ""
+      phone: "",
+      riding_for:""
     });
 
     setWaiverAccepted(false);
