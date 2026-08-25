@@ -116,7 +116,7 @@ function App() {
           { /*In recognition of Armed Forces Day, observed on the third Saturday of May, this month’s ride honors the dedicated men and women currently serving in the United States Armed Forces—Army, Navy, Marine Corps, Air Force, Coast Guard, and Space Force. We proudly acknowledge their service, sacrifice, and commitment to our nation.*/}
     {<p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "20px" }}>
       Join us for the K.I.N.D. Ride for Miles as we cycle through Tamarac’s neighborhoods, promoting positivity, supporting local businesses, and fostering a spirit of kindness, connection, and respect within our community.
-
+In recognition of Breast Cancer Awareness Month, this month’s ride honors the strength and courage of those who have experienced breast cancer. We ride in support of survivors, in remembrance of those we have lost, and in honor of the loved ones whose journeys have touched our lives.
 
     </p>}
         <div>
@@ -219,10 +219,10 @@ function App() {
             }}
           />
         </div>
-  {/* New input field 
+  {/* New input field */}
     {<div style={{ marginBottom: "25px" }}>
       <label style={{ fontWeight: "bold" }}>
-        Please share the name of the person you are riding in honor of
+        Please leave the name of the person you are riding in honor or memory of:
       </label>
       <input
         name="riding_for"
@@ -236,7 +236,7 @@ function App() {
           marginTop: "8px"
         }}
       />
-    </div>}*/}
+    </div>}
         <button type="submit" className="register-btn">
           Register
         </button>
