@@ -10,7 +10,7 @@ require('dotenv').config();
 
 router.post("/register", (req, res) => {
   //console.log("📩 Incoming POST /register");
-  //console.log("Body received:", req.body);
+  console.log("Body received:", req.body);
 
   try {
     const { firstName, lastName, dob, address, email, phone, waiverAccepted, waiverTimestamp, riding_for } = req.body;
@@ -19,7 +19,7 @@ router.post("/register", (req, res) => {
     const registrationTimestamp = new Date();
     const year = new Date().getFullYear();
     //Date that needs to be change for every K.I.N.D event
-    const cutoffDate = `${year}-10-18 12:00:00`;
+    const cutoffDate = `${year}-08-20 12:00:00`;
 
 
     if (!waiverAccepted || !waiverTimestamp) {
@@ -44,7 +44,7 @@ db.query(checkSql, [email, cutoffDate], (err, results) => {
     return res.status(500).json({ success: false, message: "Database error" });
   }
 
-  // Si results > 0 → bloquear
+  // If results > 0 → bloquear
   if (results.length > 0) {
     return res.status(400).json({
       success: false,
