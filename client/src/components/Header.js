@@ -37,7 +37,7 @@ function Header() {
           color:"#000000"
         }}
       >
-        K.I.N.D<br /> RIDE FOR MILES
+        K.I.N.D<br /> MILES FOR A CURE
       </h1>
     </header>
   );
