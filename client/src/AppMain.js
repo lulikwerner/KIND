@@ -9,6 +9,25 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 
+/*
+=========================================================
+API ADDRESS
+
+If the Node/Express server is available on the same
+registerkind.tamarac.gov domain, you do not need to
+set anything.
+
+If the API is on another address/port, set:
+
+REACT_APP_API_URL=https://your-api-address
+
+in the React production environment.
+=========================================================
+*/
+
+const API_BASE = process.env.REACT_APP_API_URL || "";
+
+
 function App() {
 
   /* =========================================================
@@ -39,16 +58,14 @@ function App() {
 
 
   /* =========================================================
-     BIKE AVAILABILITY STATE
+     BIKE AVAILABILITY
   ========================================================= */
+
+  const [checkingBikes, setCheckingBikes] = useState(true);
 
   const [bikesAvailable, setBikesAvailable] = useState(false);
 
   const [remainingBikes, setRemainingBikes] = useState(0);
-
-  const [checkingBikes, setCheckingBikes] = useState(true);
-
-  const [bikeApiError, setBikeApiError] = useState("");
 
 
   /* =========================================================
@@ -60,74 +77,87 @@ function App() {
     try {
 
       setCheckingBikes(true);
-      setBikeApiError("");
 
 
-      console.log("🚲 Checking bike availability...");
-
-
-      /*
-        If your backend uses:
-
-        app.use("/", registerRouter)
-
-        leave this as:
-        /bike-availability
-
-
-        If your backend uses:
-
-        app.use("/api", registerRouter)
-
-        change this to:
-        /api/bike-availability
-      */
-
-      const res = await fetch("/bike-availability");
-
-
-      console.log(
-        "🚲 Bike availability HTTP status:",
-        res.status
+      const response = await fetch(
+        `${API_BASE}/bike-availability`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json"
+          }
+        }
       );
 
 
-      if (!res.ok) {
+      if (!response.ok) {
 
         throw new Error(
-          `Bike availability request failed with status ${res.status}`
+          `Bike availability request failed: ${response.status}`
         );
 
       }
 
 
-      const data = await res.json();
+      /*
+        Check that we actually received JSON.
+
+        This prevents the "<!doctype html>" error you were
+        receiving when the request reached the React page
+        instead of Express.
+      */
+
+      const contentType =
+        response.headers.get("content-type") || "";
+
+
+      if (!contentType.includes("application/json")) {
+
+        const responseText = await response.text();
+
+        console.error(
+          "Bike availability returned non-JSON:",
+          responseText
+        );
+
+        throw new Error(
+          "Bike availability endpoint did not return JSON."
+        );
+
+      }
+
+
+      const data = await response.json();
 
 
       console.log(
-        "🚲 Bike availability response:",
+        "Bike availability:",
         data
       );
 
 
+      const remaining =
+        Number(data.remaining) || 0;
+
+
+      setRemainingBikes(remaining);
+
+
       setBikesAvailable(
-        data.available === true
-      );
-
-
-      setRemainingBikes(
-        typeof data.remaining === "number"
-          ? data.remaining
-          : 0
+        data.available === true &&
+        remaining > 0
       );
 
 
       /*
-        If all bikes are gone,
-        make sure the form cannot retain an old selection.
+        If no bikes are available, force need_bike
+        back to false.
       */
 
-      if (data.available !== true) {
+      if (
+        data.available !== true ||
+        remaining <= 0
+      ) {
 
         setForm((currentForm) => ({
           ...currentForm,
@@ -139,21 +169,14 @@ function App() {
     } catch (error) {
 
       console.error(
-        "❌ Unable to check bike availability:",
+        "Unable to check bike availability:",
         error
       );
 
 
-      setBikeApiError(
-        error.message ||
-        "Unable to check bike availability."
-      );
-
-
       /*
-        Safer behavior:
-        If we cannot verify bike availability,
-        don't allow a bike reservation.
+        If availability cannot be verified,
+        do not allow bike selection.
       */
 
       setBikesAvailable(false);
@@ -176,7 +199,7 @@ function App() {
 
 
   /* =========================================================
-     CHECK BIKE AVAILABILITY ON PAGE LOAD
+     CHECK BIKES WHEN PAGE LOADS
   ========================================================= */
 
   useEffect(() => {
@@ -187,35 +210,43 @@ function App() {
 
 
   /* =========================================================
-     HANDLE FORM FIELD CHANGES
+     HANDLE INPUT CHANGES
   ========================================================= */
 
   const handleChange = (e) => {
 
     const {
       name,
-      value,
-      type,
-      checked
+      value
     } = e.target;
 
 
     setForm((currentForm) => ({
-
       ...currentForm,
-
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value
-
+      [name]: value
     }));
 
   };
 
 
   /* =========================================================
-     INITIAL FORM SUBMIT
+     HANDLE NEED BIKE RADIO
+  ========================================================= */
+
+  const handleBikeChange = (needsBike) => {
+
+    setForm((currentForm) => ({
+      ...currentForm,
+      need_bike: needsBike
+    }));
+
+  };
+
+
+  /* =========================================================
+     FORM SUBMISSION
+
+     First show waiver.
   ========================================================= */
 
   const handleSubmit = (e) => {
@@ -228,7 +259,7 @@ function App() {
 
 
   /* =========================================================
-     SUBMIT TO DATABASE
+     SEND REGISTRATION TO DATABASE
   ========================================================= */
 
   const submitToDatabase = async (
@@ -250,31 +281,28 @@ function App() {
 
 
       console.log(
-        "📤 Registration payload:",
+        "Registration payload:",
         payload
       );
 
 
-      const res = await fetch("/register", {
+      const response = await fetch(
+        `${API_BASE}/register`,
+        {
 
-        method: "POST",
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+          headers: {
+            "Content-Type": "application/json"
+          },
 
-        body: JSON.stringify(payload)
+          body: JSON.stringify(payload)
 
-      });
-
-
-      const data = await res.json();
-
-
-      console.log(
-        "📥 Registration response:",
-        data
+        }
       );
+
+
+      const data = await response.json();
 
 
       /* =====================================================
@@ -294,8 +322,8 @@ function App() {
 
 
         /*
-          Recheck bikes in case the last bike
-          was just taken by another person.
+          Somebody may have taken the last available bike
+          while this person was completing the form.
         */
 
         await checkBikeAvailability();
@@ -340,7 +368,10 @@ function App() {
 
 
       /*
-        Update the available-bike count.
+        Recount bikes.
+
+        If this person reserved bike #4,
+        the Need a Bike field will now disappear.
       */
 
       await checkBikeAvailability();
@@ -348,7 +379,7 @@ function App() {
     } catch (error) {
 
       console.error(
-        "❌ Registration error:",
+        "Registration error:",
         error
       );
 
@@ -412,487 +443,425 @@ function App() {
 
   return (
 
-    <>
+    <div
+      style={{
+        maxWidth: 400,
+        margin: "450px auto 0",
+        paddingBottom: "120px",
+        backgroundColor: "white",
+        padding: "30px",
+        borderRadius: "12px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        fontFamily: "Arial, sans-serif"
+      }}
+    >
 
       <Header />
 
 
-      <main
+      {/* =====================================================
+          REGISTRATION FORM
+      ===================================================== */}
+
+      <form
+        onSubmit={handleSubmit}
         style={{
-          maxWidth: "400px",
-          margin: "40px auto 80px",
-          backgroundColor: "white",
-          padding: "30px",
-          borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-          fontFamily: "Arial, sans-serif"
+          display: "flex",
+          flexDirection: "column",
+          gap: "18px",
+          width: "100%"
         }}
       >
 
 
-        <form
-          onSubmit={handleSubmit}
+        {/* ===================================================
+            INTRO
+        =================================================== */}
+
+        <p
           style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "18px",
-            width: "100%"
+            fontSize: "16px",
+            fontWeight: "bold",
+            marginBottom: "20px"
           }}
         >
 
+          Join us for the K.I.N.D. Ride for Miles as we cycle
+          through Tamarac’s neighborhoods, promoting positivity,
+          supporting local businesses, and fostering a spirit of
+          kindness, connection, and respect within our community.
 
-          {/* ===================================================
-              INTRO MESSAGE
-          =================================================== */}
+          <br />
+          <br />
 
-          <p
+          In recognition of Breast Cancer Awareness Month, this
+          month’s ride honors the strength and courage of those
+          who have experienced breast cancer. We ride in support
+          of survivors, in remembrance of those we have lost,
+          and in honor of the loved ones whose journeys have
+          touched our lives.
+
+        </p>
+
+
+        {/* ===================================================
+            FIRST NAME
+        =================================================== */}
+
+        <div>
+
+          <label
+            htmlFor="firstName"
             style={{
-              fontSize: "16px",
-              fontWeight: "bold",
-              marginBottom: "20px"
+              fontWeight: "bold"
+            }}
+          >
+            First Name
+          </label>
+
+          <input
+            id="firstName"
+            name="firstName"
+            value={form.firstName}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              boxSizing: "border-box"
+            }}
+          />
+
+        </div>
+
+
+        {/* ===================================================
+            LAST NAME
+        =================================================== */}
+
+        <div>
+
+          <label
+            htmlFor="lastName"
+            style={{
+              fontWeight: "bold"
+            }}
+          >
+            Last Name
+          </label>
+
+          <input
+            id="lastName"
+            name="lastName"
+            value={form.lastName}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              boxSizing: "border-box"
+            }}
+          />
+
+        </div>
+
+
+        {/* ===================================================
+            DOB
+        =================================================== */}
+
+        <div>
+
+          <label
+            htmlFor="dob"
+            style={{
+              fontWeight: "bold"
+            }}
+          >
+            Date of Birth
+          </label>
+
+          <input
+            id="dob"
+            name="dob"
+            type="date"
+            value={form.dob}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              minHeight: "18px",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              backgroundColor: "white",
+              WebkitAppearance: "none",
+              boxSizing: "border-box"
+            }}
+          />
+
+        </div>
+
+
+        {/* ===================================================
+            ADDRESS
+        =================================================== */}
+
+        <div>
+
+          <label
+            htmlFor="address"
+            style={{
+              fontWeight: "bold"
+            }}
+          >
+            Address
+          </label>
+
+          <input
+            id="address"
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              boxSizing: "border-box"
+            }}
+          />
+
+        </div>
+
+
+        {/* ===================================================
+            EMAIL
+        =================================================== */}
+
+        <div>
+
+          <label
+            htmlFor="email"
+            style={{
+              fontWeight: "bold"
+            }}
+          >
+            Email
+          </label>
+
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              boxSizing: "border-box"
+            }}
+          />
+
+        </div>
+
+
+        {/* ===================================================
+            PHONE
+        =================================================== */}
+
+        <div>
+
+          <label
+            htmlFor="phone"
+            style={{
+              fontWeight: "bold"
+            }}
+          >
+            Phone Number
+          </label>
+
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            value={form.phone}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              boxSizing: "border-box"
+            }}
+          />
+
+        </div>
+
+
+        {/* ===================================================
+            RIDING IN HONOR / MEMORY OF
+        =================================================== */}
+
+        <div
+          style={{
+            marginBottom: "25px"
+          }}
+        >
+
+          <label
+            htmlFor="riding_for"
+            style={{
+              fontWeight: "bold"
             }}
           >
 
-            Join us for the K.I.N.D. Ride for Miles as we cycle
-            through Tamarac’s neighborhoods, promoting positivity,
-            supporting local businesses, and fostering a spirit of
-            kindness, connection, and respect within our community.
+            Please leave the name of the person you are riding
+            in honor or memory of:
 
-            <br />
-            <br />
-
-            In recognition of Breast Cancer Awareness Month, this
-            month’s ride honors the strength and courage of those
-            who have experienced breast cancer. We ride in support
-            of survivors, in remembrance of those we have lost,
-            and in honor of the loved ones whose journeys have
-            touched our lives.
-
-          </p>
+          </label>
 
 
-          {/* ===================================================
-              FIRST NAME
-          =================================================== */}
+          <input
+            id="riding_for"
+            name="riding_for"
+            value={form.riding_for}
+            onChange={handleChange}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              marginTop: "8px",
+              boxSizing: "border-box"
+            }}
+          />
 
-          <div>
-
-            <label
-              htmlFor="firstName"
-              style={{
-                fontWeight: "bold"
-              }}
-            >
-              First Name
-            </label>
-
-            <input
-              id="firstName"
-              name="firstName"
-              value={form.firstName}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                boxSizing: "border-box"
-              }}
-            />
-
-          </div>
+        </div>
 
 
-          {/* ===================================================
-              LAST NAME
-          =================================================== */}
-
-          <div>
-
-            <label
-              htmlFor="lastName"
-              style={{
-                fontWeight: "bold"
-              }}
-            >
-              Last Name
-            </label>
-
-            <input
-              id="lastName"
-              name="lastName"
-              value={form.lastName}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                boxSizing: "border-box"
-              }}
-            />
-
-          </div>
 
 
-          {/* ===================================================
-              DATE OF BIRTH
-          =================================================== */}
+        {/* ===================================================
+            NEED A BIKE
 
-          <div>
+            THIS WHOLE SECTION ONLY EXISTS WHILE
+            AT LEAST ONE OF THE FOUR BIKES IS AVAILABLE.
+        =================================================== */}
 
-            <label
-              htmlFor="dob"
-              style={{
-                fontWeight: "bold"
-              }}
-            >
-              Date of Birth
-            </label>
-
-            <input
-              id="dob"
-              name="dob"
-              type="date"
-              value={form.dob}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                minHeight: "18px",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                backgroundColor: "white",
-                WebkitAppearance: "none",
-                boxSizing: "border-box"
-              }}
-            />
-
-          </div>
-
-
-          {/* ===================================================
-              ADDRESS
-          =================================================== */}
-
-          <div>
-
-            <label
-              htmlFor="address"
-              style={{
-                fontWeight: "bold"
-              }}
-            >
-              Address
-            </label>
-
-            <input
-              id="address"
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                boxSizing: "border-box"
-              }}
-            />
-
-          </div>
-
-
-          {/* ===================================================
-              EMAIL
-          =================================================== */}
-
-          <div>
-
-            <label
-              htmlFor="email"
-              style={{
-                fontWeight: "bold"
-              }}
-            >
-              Email
-            </label>
-
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                boxSizing: "border-box"
-              }}
-            />
-
-          </div>
-
-
-          {/* ===================================================
-              PHONE
-          =================================================== */}
-
-          <div>
-
-            <label
-              htmlFor="phone"
-              style={{
-                fontWeight: "bold"
-              }}
-            >
-              Phone Number
-            </label>
-
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={form.phone}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                boxSizing: "border-box"
-              }}
-            />
-
-          </div>
-
-
-          {/* ===================================================
-              RIDING FOR
-          =================================================== */}
-
-          <div>
-
-            <label
-              htmlFor="riding_for"
-              style={{
-                fontWeight: "bold"
-              }}
-            >
-              Please leave the name of the person you are riding
-              in honor or memory of:
-            </label>
-
-            <input
-              id="riding_for"
-              name="riding_for"
-              value={form.riding_for}
-              onChange={handleChange}
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                marginTop: "8px",
-                boxSizing: "border-box"
-              }}
-            />
-
-          </div>
-
-
-          {/* ===================================================
-              TEMPORARY BIKE DEBUG
-          =================================================== */}
+        {!checkingBikes && bikesAvailable && (
 
           <div
             style={{
-              padding: "12px",
-              backgroundColor: "#fff3cd",
-              border: "1px solid #ffe69c",
-              borderRadius: "6px",
-              fontSize: "14px"
+              marginBottom: "25px",
+              padding: "15px",
+              backgroundColor: "#f7f7f7",
+              borderRadius: "8px",
+              border: "1px solid #ddd"
             }}
           >
 
-            <strong>Bike Debug</strong>
-
-            <br />
-
-            checkingBikes:
-            {" "}
-            {String(checkingBikes)}
-
-            <br />
-
-            bikesAvailable:
-            {" "}
-            {String(bikesAvailable)}
-
-            <br />
-
-            remainingBikes:
-            {" "}
-            {remainingBikes}
-
-            <br />
-
-            {bikeApiError && (
-              <>
-                API Error:
-                {" "}
-                {bikeApiError}
-              </>
-            )}
-
-          </div>
-
-
-          {/* ===================================================
-              CHECKING AVAILABILITY
-          =================================================== */}
-
-          {checkingBikes && (
-
-            <p
+            <fieldset
               style={{
-                fontSize: "14px",
-                color: "#666",
+                border: 0,
+                padding: 0,
                 margin: 0
               }}
             >
-              Checking bike availability...
-            </p>
 
-          )}
-
-
-          {/* ===================================================
-              BIKE AVAILABLE
-          =================================================== */}
-
-          {!checkingBikes && bikesAvailable && (
-
-            <div
-              style={{
-                marginBottom: "10px",
-                padding: "15px",
-                backgroundColor: "#f7f7f7",
-                borderRadius: "8px",
-                border: "1px solid #ddd"
-              }}
-            >
-
-              <label
-                htmlFor="need_bike"
+              <legend
                 style={{
-                  display: "block",
                   fontWeight: "bold",
                   marginBottom: "10px"
                 }}
               >
                 Need a Bike?
-              </label>
+              </legend>
 
 
-              <div
+              {/* YES */}
+
+              <label
                 style={{
-                  display: "flex",
+                  display: "inline-flex",
                   alignItems: "center",
-                  gap: "10px"
+                  gap: "6px",
+                  marginRight: "25px",
+                  cursor: "pointer"
                 }}
               >
 
                 <input
-                  id="need_bike"
+                  type="radio"
                   name="need_bike"
-                  type="checkbox"
-                  checked={form.need_bike}
-                  onChange={handleChange}
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    cursor: "pointer"
-                  }}
+                  value="yes"
+                  checked={form.need_bike === true}
+                  onChange={() =>
+                    handleBikeChange(true)
+                  }
                 />
 
+                Yes
 
-                <label
-                  htmlFor="need_bike"
-                  style={{
-                    cursor: "pointer"
-                  }}
-                >
-                  Yes, I need a City-provided bike.
-                </label>
-
-              </div>
+              </label>
 
 
-              <p
+              {/* NO */}
+
+              <label
                 style={{
-                  marginTop: "10px",
-                  marginBottom: 0,
-                  fontSize: "14px",
-                  color: "#555"
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  cursor: "pointer"
                 }}
               >
 
-                {remainingBikes === 1
-                  ? "1 bike is currently available."
-                  : `${remainingBikes} bikes are currently available.`}
+                <input
+                  type="radio"
+                  name="need_bike"
+                  value="no"
+                  checked={form.need_bike === false}
+                  onChange={() =>
+                    handleBikeChange(false)
+                  }
+                />
 
-              </p>
+                No
 
-            </div>
-
-          )}
-
-
-          {/* ===================================================
-              NO BIKES AVAILABLE
-          =================================================== */}
-
-          {!checkingBikes && !bikesAvailable && !bikeApiError && (
-
-            <p
-              style={{
-                padding: "12px",
-                margin: 0,
-                backgroundColor: "#f5f5f5",
-                borderRadius: "6px",
-                color: "#555",
-                fontSize: "14px"
-              }}
-            >
-              All City-provided bikes have been reserved.
-            </p>
-
-          )}
+              </label>
 
 
-          {/* ===================================================
-              REGISTER BUTTON
-          =================================================== */}
+       
 
-          <button
-            type="submit"
-            className="register-btn"
-          >
-            Register
-          </button>
+            </fieldset>
 
-        </form>
+          </div>
 
-      </main>
+        )}
+
+
+        {/* ===================================================
+            REGISTER
+        =================================================== */}
+
+        <button
+          type="submit"
+          className="register-btn"
+        >
+          Register
+        </button>
+
+      </form>
 
 
       {/* =====================================================
@@ -954,13 +923,14 @@ function App() {
               <ol>
 
                 <li>
-                  In consideration of being able to participate in
-                  K.I.N.D. BIKE RIDE (hereinafter referred to as
-                  THE ACTIVITY) sponsored by the City of Tamarac,
-                  Florida, held on October 17, 2026, I hereby
-                  RELEASE, WAIVE, DISCHARGE, COVENANT NOT TO SUE
-                  AND HOLD HARMLESS: the City of Tamarac, its
-                  officials, employees, agents, volunteers,
+
+                  In consideration of being able to participate
+                  in K.I.N.D. BIKE RIDE (hereinafter referred to
+                  as THE ACTIVITY) sponsored by the City of
+                  Tamarac, Florida, held on October 17, 2026, I
+                  hereby RELEASE, WAIVE, DISCHARGE, COVENANT NOT
+                  TO SUE AND HOLD HARMLESS: the City of Tamarac,
+                  its officials, employees, agents, volunteers,
                   invitees and assigns of the City of Tamarac
                   (hereinafter referred to as RELEASEES) from any
                   and all liability, claims, demands, actions,
@@ -973,57 +943,102 @@ function App() {
                   but not limited to SOLE, CONTRIBUTORY OR GROSS
                   NEGLIGENCE OF THE RELEASEES, or otherwise,
                   while participating in THE ACTIVITY.
+
                 </li>
 
-                <li>
-                  I hereby elect to voluntarily participate in THE
-                  ACTIVITY knowing that certain risks of harm are
-                  or may be inherent in THE ACTIVITY and that THE
-                  ACTIVITY may be hazardous to me and my property.
-                  I agree to abide by all applicable laws, bike
-                  safety protocols including wearing a bike helmet
-                  and maintaining control of my bicycle at all
-                  times to prevent harm to myself and other riders.
-                </li>
 
                 <li>
+
+                  I hereby elect to voluntarily participate in
+                  THE ACTIVITY knowing that certain risks of harm
+                  are or may be inherent in THE ACTIVITY and that
+                  THE ACTIVITY may be hazardous to me and my
+                  property. I agree to abide by all applicable
+                  laws, bike safety protocols including wearing a
+                  bike helmet and maintaining control of my
+                  bicycle at all times to prevent harm to myself
+                  and other riders and I understand I am subject
+                  to immediate removal from THE ACTIVITY if I do
+                  not comply. I VOLUNTARILY ASSUME FULL
+                  RESPONSIBILITY FOR ANY RISKS OF LOSS, PROPERTY
+                  DAMAGE OR PERSONAL INJURY, INCLUDING DEATH,
+                  that may be sustained by me, or any loss or
+                  damage to property owned by me, as a result of
+                  being engaged in THE ACTIVITY, WHETHER CAUSED
+                  BY, but not limited to, the SOLE, CONTRIBUTORY
+                  OR GROSS NEGLIGENCE OF RELEASEES.
+
+                </li>
+
+
+                <li>
+
                   I further hereby AGREE TO INDEMNIFY AND HOLD
-                  HARMLESS the RELEASEES from any loss, liability,
-                  damage, demands, liens, liabilities, judgments
-                  or costs, including court costs and attorney
-                  fees, that they may incur due to my participation
-                  in THE ACTIVITY.
+                  HARMLESS the RELEASEES from any loss,
+                  liability, damage, demands, liens, liabilities,
+                  judgments or costs, including court costs and
+                  attorney fees, that they may incur due to my
+                  participation in THE ACTIVITY, WHETHER CAUSED
+                  BY OR CONTRIBUTED TO IN WHOLE OR PART by any
+                  action or failure to act, negligence, breach
+                  of contract, or other misconduct on the part
+                  of RELEASEES or otherwise.
+
                 </li>
 
+
                 <li>
+
                   It is my express intent that this Release and
-                  Hold Harmless Agreement shall bind the members of
-                  my family and spouse, if I am alive, and my heirs,
-                  personal representatives, executors and assigns,
-                  if I am deceased.
+                  Hold Harmless Agreement shall bind the members
+                  of my family and spouse, if I am alive, and my
+                  heirs, personal representatives, executors and
+                  assigns, if I am deceased, and shall be deemed
+                  as a RELEASE, WAIVER, DISCHARGE AND COVENANT
+                  NOT TO SUE the above named RELEASEES. I hereby
+                  further agree that this Waiver of Liability and
+                  Hold Harmless Agreement shall be construed in
+                  accordance with the laws of the State of
+                  Florida. If any portion of this Agreement is
+                  held to be invalid, it is agreed that the
+                  balance shall, notwithstanding, continue in
+                  full legal force and effect.
+
                 </li>
 
+
                 <li>
-                  I understand while participating in THE ACTIVITY,
-                  I may be photographed. I agree to allow my photo,
-                  video, or film likeness to be used for any
-                  legitimate purpose the RELEASEES decide.
+
+                  I understand while participating in THE
+                  ACTIVITY, I may be photographed. I agree to
+                  allow my photo, video, or film likeness to be
+                  used for any legitimate purpose the RELEASEES
+                  decide, and assigns.
+
                 </li>
 
               </ol>
 
 
               <p>
-                IN SIGNING THIS RELEASE, I ACKNOWLEDGE AND REPRESENT
-                THAT I have read the foregoing Waiver of Liability
-                and Hold Harmless Agreement, understand it and sign
-                it voluntarily; I am at least eighteen (18) years
-                of age and fully competent; and I execute the
-                Release fully intending to be bound by same.
+
+                IN SIGNING THIS RELEASE, I ACKNOWLEDGE AND
+                REPRESENT THAT I have read the foregoing Waiver
+                of Liability and Hold Harmless Agreement,
+                understand it and sign it voluntarily; I am at
+                least eighteen (18) years of age and fully
+                competent; and I execute the Release for full,
+                adequate and complete consideration fully
+                intending to be bound by same.
+
               </p>
 
             </div>
 
+
+            {/* =================================================
+                WAIVER CHECKBOX
+            ================================================= */}
 
             <label
               style={{
@@ -1036,7 +1051,9 @@ function App() {
                 type="checkbox"
                 checked={waiverAccepted}
                 onChange={(e) =>
-                  setWaiverAccepted(e.target.checked)
+                  setWaiverAccepted(
+                    e.target.checked
+                  )
                 }
               />
 
@@ -1046,6 +1063,10 @@ function App() {
 
             </label>
 
+
+            {/* =================================================
+                ACCEPT
+            ================================================= */}
 
             <button
               type="button"
@@ -1064,11 +1085,16 @@ function App() {
             </button>
 
 
+            {/* =================================================
+                CANCEL
+            ================================================= */}
+
             <button
               type="button"
               onClick={() => {
 
                 setShowWaiver(false);
+
 
                 toast.error(
                   "You must agree to the waiver before completing your registration.",
@@ -1101,7 +1127,7 @@ function App() {
 
       <Footer />
 
-    </>
+    </div>
 
   );
 
