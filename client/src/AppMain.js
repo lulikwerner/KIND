@@ -42,7 +42,8 @@ function App() {
     email: "",
     phone: "",
     riding_for: "",
-    need_bike: false
+    need_bike: false,
+    shirt_size:""
   });
 
 
@@ -358,7 +359,8 @@ function App() {
         email: "",
         phone: "",
         riding_for: "",
-        need_bike: false
+        need_bike: false,
+        shirt_size:""
       });
 
 
@@ -748,7 +750,42 @@ function App() {
 
         </div>
 
+{/* ===================================================
+    SHIRT SIZE
+=================================================== */}
 
+<div>
+  <label
+    htmlFor="shirt_size"
+    style={{
+      fontWeight: "bold"
+    }}
+  >
+    Shirt Size
+  </label>
+
+  <select
+    id="shirt_size"
+    name="shirt_size"
+    value={form.shirt_size}
+    onChange={handleChange}
+    required
+    style={{
+      width: "100%",
+      padding: "10px",
+      borderRadius: "6px",
+      border: "1px solid #ccc",
+      backgroundColor: "white",
+      boxSizing: "border-box"
+    }}
+  >
+    <option value="">Select a shirt size</option>
+    <option value="S">Small (S)</option>
+    <option value="M">Medium (M)</option>
+    <option value="L">Large (L)</option>
+    <option value="XL">Extra Large (XL)</option>
+  </select>
+</div>
 
 
         {/* ===================================================
