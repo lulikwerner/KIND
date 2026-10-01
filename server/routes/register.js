@@ -83,7 +83,7 @@ router.post("/register", (req, res) => {
       need_bike,
       shirt_size
     } = req.body;
-
+console.log("SERVER RECEIVED SHIRT SIZE:", shirt_size);
 
     /* =====================================================
        BASIC VALIDATION

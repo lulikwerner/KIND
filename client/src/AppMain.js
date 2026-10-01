@@ -280,8 +280,6 @@ function App() {
 
       };
 
-console.log("REGISTRATION PAYLOAD:", payload);
-console.log("SHIRT SIZE:", payload.shirt_size);
 
 
       const response = await fetch(
