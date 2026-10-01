@@ -1,6 +1,6 @@
 const express = require("express");
 
-console.log("🔥 register.js LOADED");
+//console.log("🔥 register.js LOADED");
 
 const router = express.Router();
 
@@ -78,7 +78,8 @@ router.post("/register", (req, res) => {
       waiverAccepted,
       waiverTimestamp,
       riding_for,
-      need_bike
+      need_bike,
+      shirt_size
     } = req.body;
 
 
@@ -247,7 +248,8 @@ router.post("/register", (req, res) => {
               waiver_timestamp,
               registration_timestamp,
               riding_for,
-              need_bike
+              need_bike,
+              shirt_size
             )
 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -267,7 +269,8 @@ router.post("/register", (req, res) => {
               waiverTimestamp,
               registrationTimestamp,
               riding_for,
-              need_bike ? 1 : 0
+              need_bike ? 1 : 0,
+              shirt_size
             ],
             (insertErr) => {
 
