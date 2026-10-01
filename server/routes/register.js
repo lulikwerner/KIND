@@ -317,7 +317,7 @@ console.log("SERVER RECEIVED SHIRT SIZE:", shirt_size);
             need_bike ? 1 : 0,
             shirt_size
           ];
-
+console.log("INSERT VALUES:", insertValues);
 
           db.query(
             insertSql,
