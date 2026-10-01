@@ -252,7 +252,7 @@ router.post("/register", (req, res) => {
               shirt_size
             )
 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
           `;
 
 
