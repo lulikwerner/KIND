@@ -1,7 +1,5 @@
 const express = require("express");
 
-//console.log("🔥 register.js LOADED");
-
 const router = express.Router();
 
 const db = require("../db");
@@ -10,12 +8,16 @@ const transporter = require("../email");
 require("dotenv").config();
 
 
-/* BIKE SETTINGS*/
+/* =========================================================
+   BIKE SETTINGS
+========================================================= */
 
 const TOTAL_BIKES = 4;
 
 
-/* GET BIKE AVAILABILITY*/
+/* =========================================================
+   GET BIKE AVAILABILITY
+========================================================= */
 
 router.get("/bike-availability", (req, res) => {
 
@@ -29,8 +31,6 @@ router.get("/bike-availability", (req, res) => {
 
     if (err) {
 
-      console.error("❌ MySQL bike availability error:", err);
-
       return res.status(500).json({
         success: false,
         available: false,
@@ -41,12 +41,12 @@ router.get("/bike-availability", (req, res) => {
     }
 
 
-    const usedBikes = Number(results[0].bikeCount) || 0;
+    const usedBikes =
+      Number(results[0].bikeCount) || 0;
 
-    const remainingBikes = Math.max(
-      TOTAL_BIKES - usedBikes,
-      0
-    );
+
+    const remainingBikes =
+      Math.max(TOTAL_BIKES - usedBikes, 0);
 
 
     return res.json({
@@ -62,7 +62,9 @@ router.get("/bike-availability", (req, res) => {
 });
 
 
-/* REGISTER */
+/* =========================================================
+   REGISTER
+========================================================= */
 
 router.post("/register", (req, res) => {
 
@@ -83,7 +85,52 @@ router.post("/register", (req, res) => {
     } = req.body;
 
 
-    /* REGISTRATION TIMESTAMP*/
+    /* =====================================================
+       BASIC VALIDATION
+    ===================================================== */
+
+    if (
+      !firstName ||
+      !lastName ||
+      !dob ||
+      !address ||
+      !email ||
+      !phone
+    ) {
+
+      return res.status(400).json({
+        success: false,
+        message: "Please complete all required fields."
+      });
+
+    }
+
+
+    /* =====================================================
+       SHIRT SIZE VALIDATION
+    ===================================================== */
+
+    const validShirtSizes = [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ];
+
+
+    if (!validShirtSizes.includes(shirt_size)) {
+
+      return res.status(400).json({
+        success: false,
+        message: "Please select a valid shirt size."
+      });
+
+    }
+
+
+    /* =====================================================
+       REGISTRATION TIMESTAMP
+    ===================================================== */
 
     const registrationTimestamp = new Date();
 
@@ -91,15 +138,21 @@ router.post("/register", (req, res) => {
 
 
     /*
-      Date that needs to be changed for every K.I.N.D event.
+      Change this date for each K.I.N.D. event.
     */
 
-    const cutoffDate = `${year}-08-20 12:00:00`;
+    const cutoffDate =
+      `${year}-08-20 12:00:00`;
 
 
-    /* WAIVER VALIDATION */
+    /* =====================================================
+       WAIVER VALIDATION
+    ===================================================== */
 
-    if (!waiverAccepted || !waiverTimestamp) {
+    if (
+      !waiverAccepted ||
+      !waiverTimestamp
+    ) {
 
       return res.status(400).json({
         success: false,
@@ -110,7 +163,9 @@ router.post("/register", (req, res) => {
     }
 
 
-    /* CHECK FOR DUPLICATE REGISTRATION */
+    /* =====================================================
+       CHECK FOR DUPLICATE REGISTRATION
+    ===================================================== */
 
     const checkSql = `
       SELECT *
@@ -123,15 +178,13 @@ router.post("/register", (req, res) => {
 
     db.query(
       checkSql,
-      [email, cutoffDate],
+      [
+        email,
+        cutoffDate
+      ],
       (err, results) => {
 
         if (err) {
-
-          console.error(
-            "❌ MySQL SELECT error:",
-            err
-          );
 
           return res.status(500).json({
             success: false,
@@ -157,8 +210,7 @@ router.post("/register", (req, res) => {
 
 
         /* =================================================
-           IF USER DOES NOT NEED A BIKE
-           GO DIRECTLY TO INSERT
+           NO BIKE NEEDED
         ================================================= */
 
         if (!need_bike) {
@@ -169,8 +221,7 @@ router.post("/register", (req, res) => {
 
 
         /* =================================================
-           USER NEEDS A BIKE
-           CHECK HOW MANY HAVE ALREADY BEEN RESERVED
+           CHECK BIKE AVAILABILITY
         ================================================= */
 
         const bikeCountSql = `
@@ -186,11 +237,6 @@ router.post("/register", (req, res) => {
 
             if (bikeErr) {
 
-              console.error(
-                "❌ Bike count error:",
-                bikeErr
-              );
-
               return res.status(500).json({
                 success: false,
                 message:
@@ -201,11 +247,13 @@ router.post("/register", (req, res) => {
 
 
             const usedBikes =
-              Number(bikeResults[0].bikeCount) || 0;
+              Number(
+                bikeResults[0].bikeCount
+              ) || 0;
 
 
             /* =============================================
-               ALL 4 BIKES ARE RESERVED
+               ALL BIKES RESERVED
             ============================================= */
 
             if (usedBikes >= TOTAL_BIKES) {
@@ -220,7 +268,7 @@ router.post("/register", (req, res) => {
 
 
             /* =============================================
-               BIKE STILL AVAILABLE
+               BIKE AVAILABLE
             ============================================= */
 
             return insertRegistration();
@@ -251,35 +299,32 @@ router.post("/register", (req, res) => {
               need_bike,
               shirt_size
             )
-
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
+
+
+          const insertValues = [
+            firstName,
+            lastName,
+            dob,
+            address,
+            email,
+            phone,
+            waiverAccepted ? 1 : 0,
+            waiverTimestamp,
+            registrationTimestamp,
+            riding_for || "",
+            need_bike ? 1 : 0,
+            shirt_size
+          ];
 
 
           db.query(
             insertSql,
-            [
-              firstName,
-              lastName,
-              dob,
-              address,
-              email,
-              phone,
-              waiverAccepted,
-              waiverTimestamp,
-              registrationTimestamp,
-              riding_for,
-              need_bike ? 1 : 0,
-              shirt_size
-            ],
+            insertValues,
             (insertErr) => {
 
               if (insertErr) {
-
-                console.error(
-                  "❌ MySQL INSERT error:",
-                  insertErr
-                );
 
                 return res.status(500).json({
                   success: false,
@@ -291,12 +336,13 @@ router.post("/register", (req, res) => {
 
 
               /* ===========================================
-                 SEND EMAIL TO USER
+                 SEND CONFIRMATION EMAIL
               =========================================== */
 
               const mailOptions = {
 
-                from: process.env.EMAIL_FROM,
+                from:
+                  process.env.EMAIL_FROM,
 
                 to: email,
 
@@ -314,6 +360,8 @@ Event Date: October 17, 2026
 Location: Tamarac Sports Complex
 Address: 9901 NW 77th St, Tamarac, FL 33321
 
+Shirt Size: ${shirt_size}
+
 We look forward to seeing you there!`,
 
 
@@ -328,8 +376,8 @@ We look forward to seeing you there!`,
 
                   <p>
                     Please arrive by
-                    <strong>8:00 AM</strong>.<br>
-
+                    <strong>8:00 AM</strong>.
+                    <br>
                     The ride will begin promptly at
                     <strong>8:30 AM</strong>.
                   </p>
@@ -354,6 +402,11 @@ We look forward to seeing you there!`,
                   </p>
 
                   <p>
+                    <strong>Shirt Size:</strong>
+                    ${shirt_size}
+                  </p>
+
+                  <p>
                     We look forward to seeing you there!
                   </p>
                 `
@@ -363,24 +416,11 @@ We look forward to seeing you there!`,
 
               transporter.sendMail(
                 mailOptions,
-                (emailError, info) => {
-
-                  if (emailError) {
-
-                    console.error(
-                      "❌ Email send error:",
-                      emailError
-                    );
-
-                  } else {
-
-                    console.log(
-                      "📧 Email sent:",
-                      info.response
-                    );
-
-                  }
-
+                () => {
+                  /*
+                    Email errors are intentionally
+                    not written to the console.
+                  */
                 }
               );
 
@@ -405,11 +445,6 @@ We look forward to seeing you there!`,
 
 
   } catch (error) {
-
-    console.error(
-      "❌ ERROR in /register:",
-      error
-    );
 
     return res.status(500).json({
       success: false,
