@@ -2,8 +2,8 @@ function Footer() {
   return (
     <footer
       style={{
-        backgroundColor:"#EB92A9",
-        //backgroundColor: "#3a6fb6",
+         //backgroundColor:"#EB92A9",
+       backgroundColor: "#3a6fb6",
        // color: "white",
        color:"black",
         textAlign: "center",
