@@ -14,8 +14,8 @@
 }
 
 .App-header {
-  /*background-color: #282c34;*/
-  background-color: #EB92A9;
+  background-color: #2d459c;
+/*  background-color: #EB92A9;*/
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -41,8 +41,8 @@
   display: block;
   width: 105%;
   padding: 12px;
- /*background-color: #e77d2f;*/
- background-color:#D14F7B;
+background-color: #e77d2f;
+/* background-color:#D14F7B;*/
   color: "black";
   border: none;
   font-size: 18px;
@@ -53,7 +53,7 @@
 }
 
 .register-btn:hover {
-  /*background-color: #c9651f;*/
-  background-color: #DE7D9D;
+ background-color: #c9651f;
+  /*background-color: #DE7D9D;*/
   text-decoration: underline; 
 }

@@ -43,7 +43,7 @@ function App() {
     phone: "",
     riding_for: "",
     need_bike: false,
-    shirt_size:""
+    //shirt_size:""
   });
 
 
@@ -352,7 +352,7 @@ function App() {
         phone: "",
         riding_for: "",
         need_bike: false,
-        shirt_size:""
+       // shirt_size:""
       });
 
 
@@ -487,14 +487,14 @@ function App() {
 
           <br />
           <br />
-
+{/* ===================================================
           In recognition of Breast Cancer Awareness Month, this
           month’s ride honors the strength and courage of those
           who have experienced breast cancer. We ride in support
           of survivors, in remembrance of those we have lost,
           and in honor of the loved ones whose journeys have
           touched our lives.
-
+  =================================================== */}
         </p>
 
 
@@ -744,7 +744,7 @@ function App() {
 
 {/* ===================================================
     SHIRT SIZE
-=================================================== */}
+
 
 <div>
   <label
@@ -778,7 +778,7 @@ function App() {
     <option value="XL">Extra Large (XL)</option>
   </select>
 </div>
-
+=================================================== */}
 
         {/* ===================================================
             NEED A BIKE
@@ -956,7 +956,7 @@ function App() {
                   In consideration of being able to participate
                   in K.I.N.D. BIKE RIDE (hereinafter referred to
                   as THE ACTIVITY) sponsored by the City of
-                  Tamarac, Florida, held on October 17, 2026, I
+                  Tamarac, Florida, held on October 21, 2026, I
                   hereby RELEASE, WAIVE, DISCHARGE, COVENANT NOT
                   TO SUE AND HOLD HARMLESS: the City of Tamarac,
                   its officials, employees, agents, volunteers,
