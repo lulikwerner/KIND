@@ -3,9 +3,10 @@ function Header() {
     <header
       style={{
          // backgroundColor:"#EB92A9",
-        backgroundColor: "#3a6fb6",
-        //color: "white",
-        color:"black",
+        //backgroundColor: "#3a6fb6",
+        backgroundColor: "#202D55",
+        color: "white",
+        //color:"black",
         textAlign: "center",
         padding: "20px 0",
         position: "fixed",
