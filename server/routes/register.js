@@ -12,7 +12,7 @@ require("dotenv").config();
    BIKE SETTINGS
 ========================================================= */
 
-const TOTAL_BIKES = 4;
+const TOTAL_BIKES = 6;
 
 
 /* =========================================================
@@ -81,7 +81,7 @@ router.post("/register", (req, res) => {
       waiverTimestamp,
       riding_for,
       need_bike,
-      shirt_size
+      //shirt_size
     } = req.body;
 
     /* =====================================================
@@ -107,7 +107,7 @@ router.post("/register", (req, res) => {
 
     /* =====================================================
        SHIRT SIZE VALIDATION
-    ===================================================== */
+    
 
     const validShirtSizes = [
       "S",
@@ -126,7 +126,7 @@ router.post("/register", (req, res) => {
 
     }
 
-
+===================================================== */
     /* =====================================================
        REGISTRATION TIMESTAMP
     ===================================================== */
@@ -141,7 +141,7 @@ router.post("/register", (req, res) => {
     */
 
     const cutoffDate =
-      `${year}-08-20 12:00:00`;
+      `${year}-10-17 12:00:00`;
 
 
     /* =====================================================
@@ -277,7 +277,7 @@ router.post("/register", (req, res) => {
 
 
         /* =================================================
-           INSERT REGISTRATION
+           INSERT REGISTRATION add in insertSql shirt_size and ? IN VALUES
         ================================================= */
 
         function insertRegistration() {
@@ -296,9 +296,9 @@ router.post("/register", (req, res) => {
               registration_timestamp,
               riding_for,
               need_bike,
-              shirt_size
+              
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
 
 
@@ -314,7 +314,7 @@ router.post("/register", (req, res) => {
             registrationTimestamp,
             riding_for || "",
             need_bike ? 1 : 0,
-            shirt_size
+            //shirt_size
           ];
 
 
@@ -335,7 +335,10 @@ router.post("/register", (req, res) => {
 
 
               /* ===========================================
-                 SEND CONFIRMATION EMAIL
+                 SEND CONFIRMATION EMAIL Shirt Size: ${shirt_size}       <p>
+                    <strong>Shirt Size:</strong>
+                    ${shirt_size}
+                  </p>
               =========================================== */
 
               const mailOptions = {
@@ -355,11 +358,11 @@ Thank you for signing up!
 
 Please arrive by 8:00 AM. The ride will begin promptly at 8:30 AM.
 
-Event Date: October 17, 2026
+Event Date: November 21, 2026
 Location: Tamarac Sports Complex
 Address: 9901 NW 77th St, Tamarac, FL 33321
 
-Shirt Size: ${shirt_size}
+
 
 We look forward to seeing you there!`,
 
@@ -383,7 +386,7 @@ We look forward to seeing you there!`,
 
                   <p>
                     <strong>📅 Event Date:</strong>
-                    October 17, 2026
+                  Saturday, November 21, 2026
                     <br>
 
                     <strong>📍 Location:</strong>
@@ -400,10 +403,7 @@ We look forward to seeing you there!`,
                     </a>
                   </p>
 
-                  <p>
-                    <strong>Shirt Size:</strong>
-                    ${shirt_size}
-                  </p>
+            
 
                   <p>
                     We look forward to seeing you there!
