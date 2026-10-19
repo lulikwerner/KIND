@@ -277,7 +277,7 @@ router.post("/register", (req, res) => {
 
 
         /* =================================================
-           INSERT REGISTRATION add in insertSql shirt_size and ? IN VALUES
+           INSERT REGISTRATION add in insertSql ,shirt_size and ? IN VALUES
         ================================================= */
 
         function insertRegistration() {
@@ -295,7 +295,7 @@ router.post("/register", (req, res) => {
               waiver_timestamp,
               registration_timestamp,
               riding_for,
-              need_bike,
+              need_bike
               
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -313,8 +313,8 @@ router.post("/register", (req, res) => {
             waiverTimestamp,
             registrationTimestamp,
             riding_for || "",
-            need_bike ? 1 : 0,
-            //shirt_size
+            need_bike ? 1 : 0
+            //,shirt_size
           ];
 
 
