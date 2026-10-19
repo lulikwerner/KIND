@@ -35,7 +35,7 @@ function Header() {
           fontSize: "40px",
           fontWeight: "bold",
           lineHeight: "1.2",
-          color:"#000000"
+          color:"#ffffff"
         }}
       >
         K.I.N.D<br /> MILES FOR A CURE
